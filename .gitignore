@@ -1,67 +1,83 @@
-```
-# Database
-database.sqlite
-
+```gitignore
 # Dependencies
 node_modules/
-package-lock.json
 
 # Environment
 .env
 .env.local
-*.env.*
-
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-dist/
-build/
-target/
-
-# Dependencies
-.venv/
-venv/
-.npm/
-.yarn/
+.env.*
 
 # Logs and temp files
 *.log
 *.tmp
-*.swp
-*.swo
 
 # Editors
 .vscode/
 .idea/
-*.iml
-*.swp
-*.swo
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Coverage
-coverage/
-htmlcov/
-.coverage
-
-# Python specific
-*.pyc
+# Python
 __pycache__/
-.pytest_cache/
-.mypy_cache/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-selfcheck.json
+.eggs/
 *.egg-info/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+.tox/
+.cover/
 
-# Node specific
+# Node.js
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+node_modules/
+jspm_packages/
+*.tsbuildinfo
+.nyc_output
+coverage/
+.nyc_output/
+istanbul.yml
+.jest/
+.jestrc*
+.jscpd/
+.mocha.opts
+.mocharc.*
+.taprc
+.lint/
+.eslintcache
+.stylelintcache
+.prettierignore
+.remarkignore
+.editorconfig
+.firebaserc
+.circleci/config.yml
+.travis.yml
+.github/workflows/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+```
 
-# General temp/cache
-.tmp/
-.temp/
-.cache/
+Wait, let me reconsider. The only modified files are `public/app.js`, `public/style.css`, and `server.js` - these are all source files. There are no build artifacts, dependency directories, or temporary files in the changes provided.
+
+```gitignore
+
 ```

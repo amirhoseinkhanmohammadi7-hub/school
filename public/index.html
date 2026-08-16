@@ -93,66 +93,36 @@
                     </form>
                 </div>
 
-                <!-- Admin Panel - User Management -->
+                <!-- Admin Panel -->
                 <div id="adminPanel" class="panel" style="display: none;">
                     <h2><i class="fa fa-users"></i> مدیریت کاربران</h2>
-                    
-                    <!-- User Creation Form -->
-                    <div class="admin-section">
-                        <h3><i class="fa fa-user-plus"></i> ایجاد کاربر جدید</h3>
-                        <form id="registerForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="newUsername"><i class="fa fa-user"></i> نام کاربری</label>
-                                    <input type="text" id="newUsername" required placeholder="نام کاربری">
-                                </div>
-                                <div class="form-group">
-                                    <label for="newPassword"><i class="fa fa-key"></i> رمز عبور</label>
-                                    <input type="password" id="newPassword" required placeholder="رمز عبور">
-                                </div>
-                                <div class="form-group form-group-btn">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fa fa-plus"></i> افزودن
-                                    </button>
-                                </div>
+                    <form id="registerForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUsername"><i class="fa fa-user-plus"></i> نام کاربری جدید</label>
+                                <input type="text" id="newUsername" required placeholder="نام کاربری">
                             </div>
-                            <p class="success-message" id="registerSuccess"></p>
-                            <p class="error-message" id="registerError"></p>
-                        </form>
-                    </div>
-
-                    <!-- Users List -->
-                    <div class="admin-section">
-                        <h3><i class="fa fa-list"></i> لیست کاربران</h3>
-                        <div class="table-responsive">
-                            <table class="users-table">
-                                <thead>
-                                    <tr>
-                                        <th>ردیف</th>
-                                        <th>نام کاربری</th>
-                                        <th>نقش</th>
-                                        <th>تاریخ ایجاد</th>
-                                        <th>عملیات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="usersTableBody">
-                                    <tr>
-                                        <td colspan="5" class="loading">در حال بارگذاری...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="form-group">
+                                <label for="newPassword"><i class="fa fa-key"></i> رمز عبور</label>
+                                <input type="password" id="newPassword" required placeholder="رمز عبور">
+                            </div>
+                            <div class="form-group form-group-btn">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-plus"></i> افزودن کاربر
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                        <p class="success-message" id="registerSuccess"></p>
+                        <p class="error-message" id="registerError"></p>
+                    </form>
 
-                    <!-- Chart Section -->
                     <div class="chart-section">
-                        <h3><i class="fa fa-line-chart"></i> نمودار واریزی‌ها (۶ ماه اخیر)</h3>
+                        <h3><i class="fa fa-line-chart"></i> نمودار واریزی‌ها</h3>
                         <div class="chart-container" id="chartContainer">
                             <canvas id="receiptChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- Statistics Section -->
                     <div class="stats-section">
                         <h3><i class="fa fa-bar-chart"></i> آمار کلی واریزی‌ها</h3>
                         <div class="stats-cards">
@@ -169,7 +139,6 @@
                         </div>
                     </div>
 
-                    <!-- Search Section -->
                     <div class="search-section">
                         <h3><i class="fa fa-search"></i> جستجو و فیلتر</h3>
                         <div class="form-row">
@@ -224,172 +193,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mobile Navigation -->
-        <div id="mobileNav" class="mobile-nav" style="display: none;">
-            <div class="mobile-nav-item active" data-page="receipt">
-                <i class="fa fa-plus-circle"></i>
-                <span>رسید جدید</span>
-            </div>
-            <div class="mobile-nav-item" data-page="list">
-                <i class="fa fa-list"></i>
-                <span>لیست</span>
-            </div>
-            <div class="mobile-nav-item admin-only" data-page="users" style="display: none;">
-                <i class="fa fa-users"></i>
-                <span>کاربران</span>
-            </div>
-            <div class="mobile-nav-item admin-only" data-page="stats" style="display: none;">
-                <i class="fa fa-chart-line"></i>
-                <span>آمار</span>
-            </div>
-        </div>
-
-        <!-- Mobile Pages -->
-        <div id="mobilePages" class="mobile-pages" style="display: none;">
-            <!-- Mobile Receipt Page -->
-            <div id="mobileReceiptPage" class="mobile-page active">
-                <div class="mobile-header">
-                    <h1><i class="fa fa-plus-circle"></i> ثبت رسید جدید</h1>
-                    <button onclick="logout()" class="btn btn-danger btn-sm">
-                        <i class="fa fa-sign-out"></i>
-                    </button>
-                </div>
-                <div class="mobile-content">
-                    <form id="mobileReceiptForm" enctype="multipart/form-data">
-                        <div class="mobile-form-group">
-                            <label for="mobileStudentName"><i class="fa fa-user"></i> نام دانش‌آموز</label>
-                            <input type="text" id="mobileStudentName" required placeholder="نام دانش‌آموز">
-                        </div>
-                        <div class="mobile-form-group">
-                            <label for="mobileAmount"><i class="fa fa-money"></i> مبلغ (تومان)</label>
-                            <input type="number" id="mobileAmount" required placeholder="مبلغ" min="1">
-                        </div>
-                        <div class="mobile-form-group">
-                            <label for="mobilePaymentDate"><i class="fa fa-calendar"></i> تاریخ واریز</label>
-                            <input type="text" id="mobilePaymentDate" required placeholder="انتخاب تاریخ" class="datepicker">
-                        </div>
-                        <div class="mobile-form-group">
-                            <label for="mobilePaymentMethod"><i class="fa fa-credit-card"></i> روش پرداخت</label>
-                            <select id="mobilePaymentMethod" required>
-                                <option value="">انتخاب کنید</option>
-                                <option value="کارت به کارت">کارت به کارت</option>
-                                <option value="دستگاه پوز">دستگاه پوز</option>
-                            </select>
-                        </div>
-                        <div class="mobile-form-group">
-                            <label for="mobileReceiptImage"><i class="fa fa-image"></i> تصویر فیش</label>
-                            <div class="mobile-file-upload">
-                                <input type="file" id="mobileReceiptImage" accept="image/*" required>
-                                <div class="mobile-file-label">
-                                    <i class="fa fa-cloud-upload"></i> انتخاب تصویر
-                                </div>
-                                <span class="mobile-file-name"></span>
-                            </div>
-                            <div id="mobileImagePreview" class="mobile-image-preview"></div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">
-                            <i class="fa fa-save"></i> ثبت رسید
-                        </button>
-                        <p class="success-message" id="mobileReceiptSuccess"></p>
-                        <p class="error-message" id="mobileReceiptError"></p>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Mobile List Page -->
-            <div id="mobileListPage" class="mobile-page">
-                <div class="mobile-header">
-                    <h1><i class="fa fa-list"></i> لیست رسیدها</h1>
-                </div>
-                <div class="mobile-content">
-                    <div class="mobile-receipts-list" id="mobileReceiptsList">
-                        <div class="loading">در حال بارگذاری...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mobile Users Page (Admin Only) -->
-            <div id="mobileUsersPage" class="mobile-page">
-                <div class="mobile-header">
-                    <h1><i class="fa fa-users"></i> مدیریت کاربران</h1>
-                </div>
-                <div class="mobile-content">
-                    <div class="mobile-form-section">
-                        <h3><i class="fa fa-user-plus"></i> کاربر جدید</h3>
-                        <form id="mobileRegisterForm">
-                            <div class="mobile-form-group">
-                                <label for="mobileNewUsername"><i class="fa fa-user"></i> نام کاربری</label>
-                                <input type="text" id="mobileNewUsername" required placeholder="نام کاربری">
-                            </div>
-                            <div class="mobile-form-group">
-                                <label for="mobileNewPassword"><i class="fa fa-key"></i> رمز عبور</label>
-                                <input type="password" id="mobileNewPassword" required placeholder="رمز عبور">
-                            </div>
-                            <button type="submit" class="btn btn-success btn-block">
-                                <i class="fa fa-plus"></i> افزودن کاربر
-                            </button>
-                            <p class="success-message" id="mobileRegisterSuccess"></p>
-                            <p class="error-message" id="mobileRegisterError"></p>
-                        </form>
-                    </div>
-                    <div class="mobile-users-list" id="mobileUsersList">
-                        <div class="loading">در حال بارگذاری...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Mobile Stats Page (Admin Only) -->
-            <div id="mobileStatsPage" class="mobile-page">
-                <div class="mobile-header">
-                    <h1><i class="fa fa-chart-line"></i> آمار واریزی‌ها</h1>
-                </div>
-                <div class="mobile-content">
-                    <div class="mobile-stats-cards">
-                        <div class="mobile-stat-card">
-                            <i class="fa fa-money"></i>
-                            <div class="mobile-stat-value" id="mobileTotalAmount">0</div>
-                            <div class="mobile-stat-label">کل واریزی (تومان)</div>
-                        </div>
-                        <div class="mobile-stat-card">
-                            <i class="fa fa-file-text"></i>
-                            <div class="mobile-stat-value" id="mobileTotalReceipts">0</div>
-                            <div class="mobile-stat-label">تعداد رسیدها</div>
-                        </div>
-                    </div>
-                    <div class="mobile-chart-section">
-                        <h3><i class="fa fa-line-chart"></i> نمودار ۶ ماه اخیر</h3>
-                        <div class="mobile-chart-container">
-                            <canvas id="mobileReceiptChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="mobile-search-section">
-                        <h3><i class="fa fa-search"></i> جستجو</h3>
-                        <div class="mobile-form-group">
-                            <input type="text" id="mobileSearchStudent" placeholder="نام دانش‌آموز">
-                        </div>
-                        <div class="mobile-form-group">
-                            <input type="text" id="mobileSearchStartDate" class="datepicker" placeholder="از تاریخ">
-                        </div>
-                        <div class="mobile-form-group">
-                            <input type="text" id="mobileSearchEndDate" class="datepicker" placeholder="تا تاریخ">
-                        </div>
-                        <div class="mobile-btn-row">
-                            <button onclick="mobileSearchReceipts()" class="btn btn-primary">
-                                <i class="fa fa-search"></i> جستجو
-                            </button>
-                            <button onclick="mobileResetSearch()" class="btn btn-secondary">
-                                <i class="fa fa-refresh"></i> نمایش همه
-                            </button>
-                        </div>
-                        <div class="mobile-search-stats">
-                            <span id="mobileSearchTotal">جمع: 0 تومان</span>
-                            <span id="mobileSearchCount">تعداد: 0</span>
-                        </div>
                     </div>
                 </div>
             </div>
