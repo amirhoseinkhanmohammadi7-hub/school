@@ -291,44 +291,6 @@ app.get('/api/admin/receipts', authenticateToken, isAdmin, (req, res) => {
     res.json({ receipts: rows, totalAmount: total, totalCount: rows.length });
 });
 
-// Get chart data (admin only)
-app.get('/api/chart-data', authenticateToken, isAdmin, (req, res) => {
-    // Get monthly data for the last 6 months
-    const today = new Date();
-    const labels = [];
-    const amounts = [];
-    const counts = [];
-    
-    for (let i = 5; i >= 0; i--) {
-        const date = new Date(today.getFullYear(), today.getMonth() - i, 1);
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        
-        // Convert to Persian date for display
-        const persianMonth = new Intl.DateTimeFormat('fa-IR', { month: 'long' }).format(date);
-        const persianYear = new Intl.DateTimeFormat('fa-IR', { year: 'numeric' }).format(date);
-        
-        labels.push(`${persianMonth} ${persianYear}`);
-        
-        // Get start and end dates in Gregorian format for database query
-        const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
-        const lastDay = new Date(year, month, 0).getDate();
-        const endDate = `${year}-${String(month).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-        
-        // Query for this month's data
-        const row = db.prepare(`
-            SELECT SUM(amount) as total, COUNT(*) as count 
-            FROM receipts 
-            WHERE payment_date >= ? AND payment_date <= ?
-        `).get(startDate, endDate);
-        
-        amounts.push(row.total || 0);
-        counts.push(row.count || 0);
-    }
-    
-    res.json({ labels, amounts, counts });
-});
-
 // Delete receipt
 app.delete('/api/receipts/:id', authenticateToken, (req, res) => {
     const receiptId = req.params.id;

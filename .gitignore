@@ -1,31 +1,50 @@
 ```
-# Database files
-*.sqlite
-
-# Logs and temp files
+node_modules/
+package-lock.json
 *.log
 *.tmp
 *.swp
-
-# Environment
+*.swo
+*.out
+.DS_Store
+Thumbs.db
 .env
 .env.local
-*.env.*
-
-# Editors
-.vscode/
-.idea/
-
-# Dependencies
-node_modules/
-venv/
-.venv/
-__pycache__/
-.mypy_cache/
+.env.*
+.npmignore
+.travis.yml
+.coverage
+coverage/
+htmlcov/
 .pytest_cache/
-
-# Build artifacts
-dist/
-build/
-target/
+.mypy_cache/
+__pycache__/
+*.pyc
+*.class
+*.dll
+*.so
+*.a
+*.exe
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```
