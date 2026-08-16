@@ -43,6 +43,29 @@ $(document).ready(function() {
     }
 });
 
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const navbar = document.querySelector('.navbar');
+    navbar.classList.toggle('mobile-open');
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastIcon = toast.querySelector('.toast-icon');
+    const toastMessage = toast.querySelector('.toast-message');
+    
+    toast.className = `toast ${type}`;
+    toastIcon.className = `toast-icon fa ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}`;
+    toastMessage.textContent = message;
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
 // Login form submit
 $('#loginForm').on('submit', async function(e) {
     e.preventDefault();
@@ -239,10 +262,13 @@ async function loadAllReceipts(params = {}) {
 function displayReceipts(receipts, isAdmin = false) {
     if (!receipts || receipts.length === 0) {
         $('#receiptsTableBody').html('<tr><td colspan="8" class="loading">هیچ رسیدی یافت نشد</td></tr>');
+        $('#cardsView').html('<div class="empty-state">هیچ رسیدی یافت نشد</div>');
         return;
     }
     
     let html = '';
+    let cardsHtml = '';
+    
     receipts.forEach((receipt, index) => {
         const date = new Date(receipt.created_at).toLocaleDateString('fa-IR');
         html += `
@@ -268,9 +294,53 @@ function displayReceipts(receipts, isAdmin = false) {
                 </td>
             </tr>
         `;
+        
+        // Mobile card view
+        cardsHtml += `
+            <div class="card-item">
+                <div class="card-row">
+                    <span class="card-label">نام دانش‌آموز:</span>
+                    <span class="card-value">${receipt.student_name}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">مبلغ (تومان):</span>
+                    <span class="card-value">${receipt.amount.toLocaleString()}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">تاریخ واریز:</span>
+                    <span class="card-value">${receipt.payment_date}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">روش پرداخت:</span>
+                    <span class="card-value">${receipt.payment_method}</span>
+                </div>
+                <div class="card-row">
+                    <span class="card-label">تصویر فیش:</span>
+                    <img src="${API_URL}/uploads/${receipt.receipt_image}" 
+                         alt="فیش واریزی" 
+                         class="card-image"
+                         onclick="viewImage('${API_URL}/uploads/${receipt.receipt_image}')">
+                </div>
+                <div class="card-row">
+                    <span class="card-label">تاریخ ثبت:</span>
+                    <span class="card-value">${date}</span>
+                </div>
+                <div class="card-actions">
+                    <a href="${API_URL}/uploads/${receipt.receipt_image}" target="_blank" class="btn-view">
+                        <i class="fa fa-eye"></i> مشاهده
+                    </a>
+                    ${isAdmin || receipt.user_id === currentUser.id ? `
+                    <button onclick="deleteReceipt(${receipt.id})" class="btn-delete">
+                        <i class="fa fa-trash"></i> حذف
+                    </button>
+                    ` : ''}
+                </div>
+            </div>
+        `;
     });
     
     $('#receiptsTableBody').html(html);
+    $('#cardsView').html(cardsHtml);
 }
 
 // View image in modal
