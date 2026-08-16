@@ -259,6 +259,44 @@ app.get('/api/statistics', authenticateToken, isAdmin, (req, res) => {
     res.json({ total: row.total || 0, count: row.count || 0 });
 });
 
+// Get monthly chart data (admin only)
+app.get('/api/chart-data', authenticateToken, isAdmin, (req, res) => {
+    // Get last 6 months data
+    const query = `
+        SELECT 
+            strftime('%Y-%m', payment_date) as month,
+            COUNT(*) as count,
+            SUM(amount) as total
+        FROM receipts 
+        WHERE payment_date >= date('now', '-6 months')
+        GROUP BY month
+        ORDER BY month ASC
+    `;
+    
+    const rows = db.prepare(query).all();
+    
+    // Convert to Persian month names
+    const persianMonths = {
+        '01': 'فروردین', '02': 'اردیبهشت', '03': 'خرداد',
+        '04': 'تیر', '05': 'مرداد', '06': 'شهریور',
+        '07': 'مهر', '08': 'آبان', '09': 'آذر',
+        '10': 'دی', '11': 'بهمن', '12': 'اسفند'
+    };
+    
+    const labels = [];
+    const counts = [];
+    const totals = [];
+    
+    rows.forEach(row => {
+        const monthNum = row.month.split('-')[1];
+        labels.push(persianMonths[monthNum] || row.month);
+        counts.push(row.count);
+        totals.push(row.total);
+    });
+    
+    res.json({ labels, counts, totals });
+});
+
 // Get all receipts with stats (admin only)
 app.get('/api/admin/receipts', authenticateToken, isAdmin, (req, res) => {
     const { studentName, startDate, endDate } = req.query;
