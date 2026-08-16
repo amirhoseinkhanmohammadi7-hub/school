@@ -10,23 +10,22 @@
     --accent-blue: #1e3a5f;
     --light-blue: #2d4a6f;
     --highlight: #3d5a80;
-    --vibrant-blue: #00d4ff;
     --text-primary: #e8e8e8;
     --text-secondary: #b0b0b0;
     --success: #28a745;
     --danger: #dc3545;
     --warning: #ffc107;
-    --info: #00d4ff;
-    --glass-bg: rgba(10, 30, 60, 0.75);
-    --glass-border: rgba(0, 212, 255, 0.3);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --info: #17a2b8;
+    --glass-bg: rgba(30, 58, 95, 0.65);
+    --glass-border: rgba(61, 90, 128, 0.4);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 body {
     font-family: 'Tahoma', 'Segoe UI', Arial, sans-serif;
     background: 
-        linear-gradient(135deg, rgba(10, 22, 40, 0.95) 0%, rgba(26, 39, 68, 0.95) 100%),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4ff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3Cg fill='%2300d4ff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='3'/%3E%3Ccircle cx='15' cy='15' r='2'/%3E%3Ccircle cx='45' cy='45' r='2'/%3E%3C/g%3E%3C/svg%3E");
+        linear-gradient(135deg, rgba(10, 22, 40, 0.9) 0%, rgba(26, 39, 68, 0.9) 100%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e3a5f' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     background-size: cover, 60px 60px;
     color: var(--text-primary);
     min-height: 100vh;
@@ -49,23 +48,25 @@ body {
 }
 
 /* Glassmorphism Effect */
-.glass,
-.login-box,
-.navbar,
-.panel {
+.glass {
     background: var(--glass-bg);
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
 }
 
 /* Login Page */
 .login-box {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;
     padding: 30px 25px;
     max-width: 450px;
     margin: 40px auto;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
 }
 
 .login-box h1 {
@@ -241,14 +242,19 @@ body {
 
 /* Navbar */
 .navbar {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 15px 20px;
     border-radius: 15px;
     margin-bottom: 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
     flex-wrap: wrap;
     gap: 15px;
-    padding: 15px 20px;
 }
 
 .nav-brand {
@@ -290,8 +296,13 @@ body {
 }
 
 .panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 20px;
     padding: 25px 20px;
+    box-shadow: var(--glass-shadow);
+    border: 1px solid var(--glass-border);
 }
 
 .panel h2 {
@@ -392,9 +403,7 @@ body {
 }
 
 .stat-card {
-    background: rgba(10, 30, 60, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 22, 40, 0.6);
     padding: 20px 15px;
     border-radius: 15px;
     text-align: center;
@@ -445,9 +454,7 @@ body {
 }
 
 .chart-container {
-    background: rgba(10, 30, 60, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 22, 40, 0.6);
     border-radius: 15px;
     padding: 20px;
     border: 2px solid var(--highlight);
@@ -476,9 +483,7 @@ body {
 .search-stats {
     margin-top: 15px;
     padding: 15px;
-    background: rgba(10, 30, 60, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(10, 22, 40, 0.6);
     border-radius: 12px;
     display: flex;
     gap: 20px;
@@ -506,9 +511,7 @@ body {
 }
 
 .receipts-table thead {
-    background: rgba(10, 30, 60, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(10, 22, 40, 0.8);
 }
 
 .receipts-table th {
@@ -640,140 +643,84 @@ body {
     transform: scale(1.2);
 }
 
-/* Mobile Optimizations - Complete Mobile Version */
+/* Mobile Optimizations */
 @media (max-width: 480px) {
     .container {
-        padding: 8px;
+        padding: 10px;
     }
-
+    
     .login-box {
-        margin: 15px 8px;
-        padding: 20px 15px;
+        margin: 20px 10px;
+        padding: 25px 20px;
     }
-
+    
     .login-box h1 {
-        font-size: 17px;
+        font-size: 18px;
     }
-
+    
     .navbar {
-        padding: 10px 12px;
-        flex-direction: column;
-        gap: 10px;
+        padding: 12px 15px;
     }
-
+    
     .nav-brand {
-        font-size: 15px;
-        width: 100%;
-        justify-content: center;
+        font-size: 16px;
     }
-
+    
     .nav-brand span {
         display: none;
     }
-
+    
     .nav-info {
-        width: 100%;
-        justify-content: space-between;
-        gap: 8px;
-    }
-
-    #userWelcome {
-        font-size: 13px;
-    }
-
-    .panel {
-        padding: 15px 12px;
-        border-radius: 12px;
-    }
-
-    .panel h2 {
-        font-size: 15px;
-        margin-bottom: 15px;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr !important;
-        gap: 10px;
-    }
-
-    .form-group {
-        margin-bottom: 12px;
-    }
-
-    .form-group label {
-        font-size: 12px;
-        margin-bottom: 6px;
-    }
-
-    .form-group input,
-    .form-group select {
-        padding: 12px 14px;
-        font-size: 14px;
-    }
-
-    .btn {
-        padding: 12px 18px;
-        font-size: 14px;
         width: 100%;
         justify-content: center;
     }
-
-    .btn-sm {
-        padding: 10px 14px;
-        font-size: 13px;
+    
+    .panel {
+        padding: 20px 15px;
+        border-radius: 15px;
     }
-
-    .stat-card {
-        padding: 12px 10px;
-    }
-
-    .stat-card i {
-        font-size: 24px;
-    }
-
-    .stat-value {
+    
+    .panel h2 {
         font-size: 16px;
     }
-
-    .stat-label {
-        font-size: 11px;
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
     }
-
+    
+    .stat-card {
+        padding: 15px 10px;
+    }
+    
+    .stat-card i {
+        font-size: 28px;
+    }
+    
+    .stat-value {
+        font-size: 18px;
+    }
+    
     .chart-container {
-        height: 220px;
-        padding: 12px;
+        height: 250px;
+        padding: 15px;
     }
-
-    .search-stats {
-        flex-direction: column;
-        gap: 8px;
-        font-size: 12px;
-    }
-
+    
     .receipts-table img {
-        width: 40px;
-        height: 40px;
+        width: 45px;
+        height: 45px;
     }
-
+    
     .btn-view,
     .btn-delete {
         padding: 6px 10px;
         font-size: 11px;
     }
-
+    
     .btn-view i,
     .btn-delete i {
         display: none;
     }
-    
-    /* Hide less important columns on mobile */
-    .receipts-table th:nth-child(1),
-    .receipts-table td:nth-child(1),
-    .receipts-table th:nth-child(7),
-    .receipts-table td:nth-child(7) {
-        display: none;
-    }
-}
 }
 
 /* Tablet Optimization */
