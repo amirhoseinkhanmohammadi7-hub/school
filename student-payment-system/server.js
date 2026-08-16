@@ -58,7 +58,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve frontend for all other routes
-app.get('/*all', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
