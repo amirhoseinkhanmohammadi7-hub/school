@@ -171,6 +171,7 @@ function showDashboard() {
     
     if (currentUser.role === 'admin') {
         $('#adminPanel').show();
+        initializeAdminSections();
         loadStatistics();
         loadAllReceipts();
     } else {
@@ -821,5 +822,58 @@ function renderStudentChart(sortedStudents) {
                 }
             }
         }
+    });
+}
+
+// Toggle admin sections visibility
+function toggleAdminSection(sectionName) {
+    const section = document.getElementById(`${sectionName}Section`);
+    const btn = event.target.closest('.toggle-btn');
+    const icon = btn.querySelector('i');
+    
+    if (section.classList.contains('hidden')) {
+        section.classList.remove('hidden');
+        icon.classList.remove('fa-chevron-right');
+        icon.classList.add('fa-chevron-down');
+        btn.classList.remove('collapsed');
+        
+        // Load charts if toggling stats section
+        if (sectionName === 'stats' && !paymentMethodChartInstance) {
+            loadChartsData();
+        }
+    } else {
+        section.classList.add('hidden');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-right');
+        btn.classList.add('collapsed');
+    }
+}
+
+// Initialize admin sections as collapsed by default for certain sections
+function initializeAdminSections() {
+    // Hide charts/stats section initially
+    const statsSection = document.getElementById('statsSection');
+    if (statsSection) {
+        statsSection.classList.add('hidden');
+    }
+    
+    // Hide search section initially
+    const searchSection = document.getElementById('searchSection');
+    if (searchSection) {
+        searchSection.classList.add('hidden');
+    }
+    
+    // Hide receipts table initially
+    const receiptsSection = document.getElementById('receiptsSection');
+    if (receiptsSection) {
+        receiptsSection.classList.add('hidden');
+    }
+    
+    // Update button icons for collapsed state
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.classList.add('collapsed');
+        const icon = btn.querySelector('i');
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-right');
     });
 }

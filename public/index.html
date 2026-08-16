@@ -165,8 +165,12 @@
                             <i class="fa fa-users"></i>
                             <span>مدیریت کاربران</span>
                         </h2>
+                        <button onclick="toggleAdminSection('userManagement')" class="btn btn-secondary btn-sm toggle-btn">
+                            <i class="fa fa-chevron-down"></i>
+                        </button>
                     </div>
-                    <form id="registerForm" class="admin-form">
+                    <div id="userManagementSection" class="admin-section">
+                        <form id="registerForm" class="admin-form">
                         <div class="form-grid form-grid-3">
                             <div class="form-group">
                                 <label for="newUsername">
@@ -196,12 +200,19 @@
                         <p class="success-message" id="registerSuccess"></p>
                         <p class="error-message" id="registerError"></p>
                     </form>
+                    </div>
 
                     <div class="stats-section">
-                        <h3>
-                            <i class="fa fa-bar-chart"></i>
-                            <span>آمار کلی واریزی‌ها</span>
-                        </h3>
+                        <div class="section-header-with-toggle">
+                            <h3>
+                                <i class="fa fa-bar-chart"></i>
+                                <span>آمار کلی واریزی‌ها</span>
+                            </h3>
+                            <button onclick="toggleAdminSection('stats')" class="btn btn-secondary btn-sm toggle-btn">
+                                <i class="fa fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div id="statsSection" class="admin-section">
                         <div class="stats-cards">
                             <div class="stat-card stat-card-primary">
                                 <div class="stat-icon">
@@ -246,13 +257,20 @@
                                 <canvas id="studentChart"></canvas>
                             </div>
                         </div>
+                        </div>
                     </div>
 
                     <div class="search-section">
-                        <h3>
-                            <i class="fa fa-search"></i>
-                            <span>جستجو و فیلتر</span>
-                        </h3>
+                        <div class="section-header-with-toggle">
+                            <h3>
+                                <i class="fa fa-search"></i>
+                                <span>جستجو و فیلتر</span>
+                            </h3>
+                            <button onclick="toggleAdminSection('search')" class="btn btn-secondary btn-sm toggle-btn">
+                                <i class="fa fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div id="searchSection" class="admin-section">
                         <div class="form-grid form-grid-4">
                             <div class="form-group">
                                 <label for="searchStudent">
@@ -304,6 +322,7 @@
                                 <span class="stat-value" id="searchCount">0</span>
                             </div>
                         </div>
+                        </div>
                     </div>
                 </div>
 
@@ -314,7 +333,11 @@
                             <i class="fa fa-list"></i>
                             <span>لیست رسیدهای من</span>
                         </h2>
+                        <button onclick="toggleAdminSection('receipts')" class="btn btn-secondary btn-sm toggle-btn">
+                            <i class="fa fa-chevron-down"></i>
+                        </button>
                     </div>
+                    <div id="receiptsSection" class="admin-section">
                     <div class="table-responsive">
                         <table class="receipts-table">
                             <thead>
@@ -344,6 +367,7 @@
                     <!-- Mobile Cards View -->
                     <div class="cards-view" id="cardsView">
                         <!-- Mobile cards will be rendered here -->
+                    </div>
                     </div>
                 </div>
             </div>
