@@ -482,11 +482,71 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     background: var(--bg-primary);
+    display: block;
 }
 
 .file-upload-area:hover {
     border-color: var(--primary-color);
     background: rgba(102, 126, 234, 0.05);
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --text-primary: #f7fafc;
+    --text-secondary: #a0aec0;
+    --text-muted: #718096;
+    --border-color: #4a5568;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+    --shadow-xl: 0 20px 40px rgba(0,0,0,0.6);
+    --bg-gradient: linear-gradient(135deg, #5a67d8 0%, #6b3fa0 100%);
+}
+
+[data-theme="dark"] .login-wrapper {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+}
+
+[data-theme="dark"] .login-box {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .navbar {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .panel {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .receipts-table thead {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .receipts-table tbody tr:hover {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .stat-card {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .search-stats {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .image-preview-grid img {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .file-upload-area {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .toast {
+    background: var(--bg-secondary);
 }
 
 .upload-icon {

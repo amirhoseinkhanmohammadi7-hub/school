@@ -49,6 +49,33 @@ function toggleMobileMenu() {
     navbar.classList.toggle('mobile-open');
 }
 
+// Theme toggle
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.getElementById('themeIcon');
+    const currentTheme = body.getAttribute('data-theme');
+    
+    if (currentTheme === 'dark') {
+        body.removeAttribute('data-theme');
+        themeIcon.className = 'fa fa-moon-o';
+        localStorage.setItem('theme', 'light');
+    } else {
+        body.setAttribute('data-theme', 'dark');
+        themeIcon.className = 'fa fa-sun-o';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    const themeIcon = document.getElementById('themeIcon');
+    if (themeIcon) {
+        themeIcon.className = 'fa fa-sun-o';
+    }
+}
+
 // Show toast notification
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
