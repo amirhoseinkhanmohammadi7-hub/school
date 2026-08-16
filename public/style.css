@@ -1239,12 +1239,62 @@ body {
     }
 }
 
+/* Charts Section */
+.charts-container {
+    margin-top: var(--spacing-xl);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.chart-wrapper {
+    background: var(--bg-primary);
+    padding: var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.chart-wrapper:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
+}
+
+.chart-wrapper h4 {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.chart-wrapper h4 i {
+    color: var(--primary-color);
+}
+
+.chart-wrapper canvas {
+    width: 100% !important;
+    height: 250px !important;
+    max-height: 300px;
+}
+
+[data-theme="dark"] .chart-wrapper {
+    background: var(--bg-primary);
+}
+
+[data-theme="dark"] .chart-wrapper h4 {
+    color: var(--text-primary);
+}
+
 /* Print Styles */
 @media print {
     .mobile-menu-toggle,
     .navbar,
     .btn,
-    .panel-header {
+    .panel-header,
+    .charts-container {
         display: none !important;
     }
     
