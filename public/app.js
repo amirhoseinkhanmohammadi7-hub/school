@@ -405,21 +405,37 @@ async function loadStatistics() {
 }
 
 // Update dashboard chart
-function updateChart(stats) {
+async function updateChart(stats) {
     const ctx = document.getElementById('receiptChart');
     if (!ctx) return;
-    
+
     // Destroy existing chart
     if (receiptChart) {
         receiptChart.destroy();
     }
+
+    // Get real data from API
+    let labels = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'];
+    let data = [0, 0, 0, 0, 0, 0];
     
-    // Sample data - in real app, get from API
-    const labels = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'];
-    const data = stats.count > 0 
-        ? Array.from({length: 6}, () => Math.floor(Math.random() * stats.count / 2))
-        : [0, 0, 0, 0, 0, 0];
-    
+    try {
+        const response = await fetch(`${API_URL}/api/chart-data`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (response.ok) {
+            const chartData = await response.json();
+            if (chartData.labels && chartData.labels.length > 0) {
+                labels = chartData.labels;
+                data = chartData.counts;
+            }
+        }
+    } catch (error) {
+        console.error('Load chart data error:', error);
+    }
+
     receiptChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -427,12 +443,12 @@ function updateChart(stats) {
             datasets: [{
                 label: 'تعداد واریزی‌ها',
                 data: data,
-                borderColor: '#17a2b8',
-                backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                borderColor: '#00d4ff',
+                backgroundColor: 'rgba(0, 212, 255, 0.15)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
-                pointBackgroundColor: '#17a2b8',
+                pointBackgroundColor: '#00d4ff',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
                 pointRadius: 5,
@@ -454,10 +470,10 @@ function updateChart(stats) {
                     }
                 },
                 tooltip: {
-                    backgroundColor: 'rgba(10, 22, 40, 0.9)',
-                    titleColor: '#17a2b8',
+                    backgroundColor: 'rgba(10, 22, 40, 0.95)',
+                    titleColor: '#00d4ff',
                     bodyColor: '#e8e8e8',
-                    borderColor: '#3d5a80',
+                    borderColor: '#00d4ff',
                     borderWidth: 1,
                     padding: 12,
                     displayColors: false,
