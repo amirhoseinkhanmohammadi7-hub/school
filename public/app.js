@@ -5,6 +5,48 @@ const API_URL = '';
 let authToken = null;
 let currentUser = null;
 
+// Toggle sidebar for mobile
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// Scroll to section and close sidebar on mobile
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Close sidebar on mobile
+        if (window.innerWidth < 768) {
+            toggleSidebar();
+        }
+        
+        // Update active nav item
+        document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelector(`[href="#${sectionId}"]`).classList.add('active');
+    }
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastIcon = toast.querySelector('.toast-icon');
+    const toastMessage = toast.querySelector('.toast-message');
+    
+    toast.className = `toast ${type}`;
+    toastMessage.textContent = message;
+    toast.classList.add('active');
+    
+    setTimeout(() => {
+        toast.classList.remove('active');
+    }, 3000);
+}
+
 // Initialize datepickers
 $(document).ready(function() {
     $('.datepicker').persianDatepicker({
@@ -18,15 +60,18 @@ $(document).ready(function() {
         }
     });
 
-    // File input change handler
+    // File input change handler with modern UI
     $('#receiptImage').on('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            $('.file-name').text(file.name);
+            const uploadArea = document.querySelector('.upload-area');
+            uploadArea.classList.add('has-file');
+            document.querySelector('.upload-content h3').textContent = file.name;
+            document.querySelector('.upload-content p').textContent = `${(file.size / 1024).toFixed(2)} KB`;
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                $('#imagePreview').html(`<img src="${e.target.result}" alt="پیش‌نمایش">`);
+                $('#imagePreview').html(`<img src="${e.target.result}" alt="پیش‌نمایش" onclick="viewImage('${e.target.result}')">`);
             };
             reader.readAsDataURL(file);
         }
@@ -43,7 +88,7 @@ $(document).ready(function() {
     }
 });
 
-// Login form submit
+// Login form submit with toast notifications
 $('#loginForm').on('submit', async function(e) {
     e.preventDefault();
     
@@ -68,12 +113,13 @@ $('#loginForm').on('submit', async function(e) {
             localStorage.setItem('authToken', authToken);
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
             
+            showToast('ورود موفقیت‌آمیز بود', 'success');
             showDashboard();
         } else {
-            $('#loginError').text(data.error || 'خطا در ورود');
+            showToast(data.error || 'خطا در ورود', 'error');
         }
     } catch (error) {
-        $('#loginError').text('خطا در ارتباط با سرور');
+        showToast('خطا در ارتباط با سرور', 'error');
         console.error('Login error:', error);
     }
 });
@@ -84,14 +130,15 @@ function showDashboard() {
     $('#dashboardPage').addClass('active');
     
     $('#userWelcome').text(`خوش آمدید، ${currentUser.username}`);
-    $('#userRole').text(currentUser.role === 'admin' ? 'مدیر' : 'کاربر');
+    $('#userRole').text(currentUser.role === 'admin' ? 'مدیر' : 'کاربر').addClass('visible');
     
+    // Show admin sections for admin users
     if (currentUser.role === 'admin') {
-        $('#adminPanel').show();
+        $('.admin-only').addClass('visible');
         loadStatistics();
         loadAllReceipts();
     } else {
-        $('#adminPanel').hide();
+        $('.admin-only').removeClass('visible');
         loadUserReceipts();
     }
 }
@@ -109,7 +156,7 @@ function logout() {
     $('#loginError').text('');
 }
 
-// Receipt form submit
+// Receipt form submit with toast notifications
 $('#receiptForm').on('submit', async function(e) {
     e.preventDefault();
     
@@ -132,10 +179,11 @@ $('#receiptForm').on('submit', async function(e) {
         const data = await response.json();
         
         if (response.ok) {
-            $('#receiptSuccess').text('رسید با موفقیت ثبت شد');
-            $('#receiptError').text('');
+            showToast('رسید با موفقیت ثبت شد', 'success');
             $('#receiptForm')[0].reset();
-            $('.file-name').text('');
+            $('.upload-area').removeClass('has-file');
+            document.querySelector('.upload-content h3').textContent = 'تصویر فیش واریزی را آپلود کنید';
+            document.querySelector('.upload-content p').textContent = 'یا اینجا کلیک کنید و فایل را انتخاب نمایید';
             $('#imagePreview').html('');
             
             if (currentUser.role === 'admin') {
@@ -144,22 +192,16 @@ $('#receiptForm').on('submit', async function(e) {
             } else {
                 loadUserReceipts();
             }
-            
-            setTimeout(() => {
-                $('#receiptSuccess').text('');
-            }, 3000);
         } else {
-            $('#receiptError').text(data.error || 'خطا در ثبت رسید');
-            $('#receiptSuccess').text('');
+            showToast(data.error || 'خطا در ثبت رسید', 'error');
         }
     } catch (error) {
-        $('#receiptError').text('خطا در ارتباط با سرور');
-        $('#receiptSuccess').text('');
+        showToast('خطا در ارتباط با سرور', 'error');
         console.error('Receipt error:', error);
     }
 });
 
-// Register form submit (admin only)
+// Register form submit (admin only) with toast
 $('#registerForm').on('submit', async function(e) {
     e.preventDefault();
     
@@ -179,20 +221,13 @@ $('#registerForm').on('submit', async function(e) {
         const data = await response.json();
         
         if (response.ok) {
-            $('#registerSuccess').text('کاربر با موفقیت افزوده شد');
-            $('#registerError').text('');
+            showToast('کاربر با موفقیت افزوده شد', 'success');
             $('#registerForm')[0].reset();
-            
-            setTimeout(() => {
-                $('#registerSuccess').text('');
-            }, 3000);
         } else {
-            $('#registerError').text(data.error || 'خطا در افزودن کاربر');
-            $('#registerSuccess').text('');
+            showToast(data.error || 'خطا در افزودن کاربر', 'error');
         }
     } catch (error) {
-        $('#registerError').text('خطا در ارتباط با سرور');
-        $('#registerSuccess').text('');
+        showToast('خطا در ارتباط با سرور', 'error');
         console.error('Register error:', error);
     }
 });
@@ -235,17 +270,24 @@ async function loadAllReceipts(params = {}) {
     }
 }
 
-// Display receipts in table
+// Display receipts in table (desktop) and cards (mobile)
 function displayReceipts(receipts, isAdmin = false) {
     if (!receipts || receipts.length === 0) {
-        $('#receiptsTableBody').html('<tr><td colspan="8" class="loading">هیچ رسیدی یافت نشد</td></tr>');
+        $('#receiptsTableBody').html('<tr><td colspan="8" class="loading"><div class="loading-spinner"><i class="fas fa-inbox"></i><span>هیچ رسیدی یافت نشد</span></div></td></tr>');
+        $('#mobileReceiptsCards').html('<div class="loading-spinner"><i class="fas fa-inbox"></i><span>هیچ رسیدی یافت نشد</span></div>');
         return;
     }
     
-    let html = '';
+    // Desktop table view
+    let tableHtml = '';
+    let mobileHtml = '';
+    
     receipts.forEach((receipt, index) => {
         const date = new Date(receipt.created_at).toLocaleDateString('fa-IR');
-        html += `
+        const imageUrl = `${API_URL}/uploads/${receipt.receipt_image}`;
+        
+        // Table row for desktop
+        tableHtml += `
             <tr>
                 <td>${index + 1}</td>
                 <td>${receipt.student_name}</td>
@@ -253,40 +295,81 @@ function displayReceipts(receipts, isAdmin = false) {
                 <td>${receipt.payment_date}</td>
                 <td>${receipt.payment_method}</td>
                 <td>
-                    <img src="${API_URL}/uploads/${receipt.receipt_image}" 
+                    <img src="${imageUrl}" 
                          alt="فیش واریزی" 
-                         onclick="viewImage('${API_URL}/uploads/${receipt.receipt_image}')">
+                         onclick="viewImage('${imageUrl}')">
                 </td>
                 <td>${date}</td>
                 <td>
-                    <a href="${API_URL}/uploads/${receipt.receipt_image}" target="_blank" class="btn-view">
-                        <i class="fa fa-eye"></i> مشاهده
+                    <a href="${imageUrl}" target="_blank" class="btn-view">
+                        <i class="fas fa-eye"></i> مشاهده
                     </a>
-                    <button onclick="deleteReceipt(${receipt.id})" class="btn-delete">
-                        <i class="fa fa-trash"></i> حذف
-                    </button>
+                    ${isAdmin ? `<button onclick="deleteReceipt(${receipt.id})" class="btn-delete">
+                        <i class="fas fa-trash"></i> حذف
+                    </button>` : ''}
                 </td>
             </tr>
         `;
+        
+        // Mobile card view
+        mobileHtml += `
+            <div class="receipt-card-mobile">
+                <div class="receipt-card-header">
+                    <span class="receipt-card-value">#${index + 1}</span>
+                    <span class="receipt-card-label">${date}</span>
+                </div>
+                <div class="receipt-card-body">
+                    <div class="receipt-card-item">
+                        <span class="receipt-card-label"><i class="fas fa-user"></i> نام دانش‌آموز</span>
+                        <span class="receipt-card-value">${receipt.student_name}</span>
+                    </div>
+                    <div class="receipt-card-item">
+                        <span class="receipt-card-label"><i class="fas fa-coins"></i> مبلغ</span>
+                        <span class="receipt-card-value">${receipt.amount.toLocaleString()} تومان</span>
+                    </div>
+                    <div class="receipt-card-item">
+                        <span class="receipt-card-label"><i class="fas fa-calendar"></i> تاریخ واریز</span>
+                        <span class="receipt-card-value">${receipt.payment_date}</span>
+                    </div>
+                    <div class="receipt-card-item">
+                        <span class="receipt-card-label"><i class="fas fa-credit-card"></i> روش پرداخت</span>
+                        <span class="receipt-card-value">${receipt.payment_method}</span>
+                    </div>
+                    <img src="${imageUrl}" 
+                         class="receipt-card-image"
+                         alt="فیش واریزی" 
+                         onclick="viewImage('${imageUrl}')">
+                    <div class="receipt-card-actions">
+                        <a href="${imageUrl}" target="_blank" class="btn btn-primary btn-sm" style="flex:1;">
+                            <i class="fas fa-eye"></i> مشاهده
+                        </a>
+                        ${isAdmin ? `<button onclick="deleteReceipt(${receipt.id})" class="btn btn-danger btn-sm" style="flex:1;">
+                            <i class="fas fa-trash"></i> حذف
+                        </button>` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
     });
     
-    $('#receiptsTableBody').html(html);
+    $('#receiptsTableBody').html(tableHtml);
+    $('#mobileReceiptsCards').html(mobileHtml);
 }
 
 // View image in modal
 function viewImage(src) {
     $('#modalImage').attr('src', src);
-    $('#imageModal').css('display', 'block');
+    $('#imageModal').addClass('active');
 }
 
 // Close modal
 function closeModal() {
-    $('#imageModal').css('display', 'none');
+    $('#imageModal').removeClass('active');
 }
 
 // Close modal when clicking outside
 $(window).on('click', function(e) {
-    if ($(e.target).is('#imageModal')) {
+    if ($(e.target).is('#imageModal') || $(e.target).hasClass('modal-backdrop')) {
         closeModal();
     }
 });
@@ -308,6 +391,7 @@ async function deleteReceipt(id) {
         const data = await response.json();
         
         if (response.ok) {
+            showToast('رسید با موفقیت حذف شد', 'success');
             if (currentUser.role === 'admin') {
                 loadAllReceipts();
                 loadStatistics();
@@ -315,10 +399,10 @@ async function deleteReceipt(id) {
                 loadUserReceipts();
             }
         } else {
-            alert(data.error || 'خطا در حذف رسید');
+            showToast(data.error || 'خطا در حذف رسید', 'error');
         }
     } catch (error) {
-        alert('خطا در ارتباط با سرور');
+        showToast('خطا در ارتباط با سرور', 'error');
         console.error('Delete error:', error);
     }
 }
