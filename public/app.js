@@ -4,6 +4,7 @@ const API_URL = '';
 // Global variables
 let authToken = null;
 let currentUser = null;
+let receiptChart = null;
 
 // Initialize datepickers
 $(document).ready(function() {
@@ -395,7 +396,113 @@ async function loadStatistics() {
         
         $('#totalAmount').text(stats.total.toLocaleString());
         $('#totalReceipts').text(stats.count);
+        
+        // Update chart
+        updateChart(stats);
     } catch (error) {
         console.error('Load statistics error:', error);
     }
+}
+
+// Update dashboard chart
+function updateChart(stats) {
+    const ctx = document.getElementById('receiptChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart
+    if (receiptChart) {
+        receiptChart.destroy();
+    }
+    
+    // Sample data - in real app, get from API
+    const labels = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'];
+    const data = stats.count > 0 
+        ? Array.from({length: 6}, () => Math.floor(Math.random() * stats.count / 2))
+        : [0, 0, 0, 0, 0, 0];
+    
+    receiptChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'تعداد واریزی‌ها',
+                data: data,
+                borderColor: '#17a2b8',
+                backgroundColor: 'rgba(23, 162, 184, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#17a2b8',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    labels: {
+                        color: '#e8e8e8',
+                        font: {
+                            family: 'Tahoma',
+                            size: 13
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(10, 22, 40, 0.9)',
+                    titleColor: '#17a2b8',
+                    bodyColor: '#e8e8e8',
+                    borderColor: '#3d5a80',
+                    borderWidth: 1,
+                    padding: 12,
+                    displayColors: false,
+                    rtl: true,
+                    titleFont: {
+                        family: 'Tahoma',
+                        size: 14
+                    },
+                    bodyFont: {
+                        family: 'Tahoma',
+                        size: 13
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(61, 90, 128, 0.3)'
+                    },
+                    ticks: {
+                        color: '#b0b0b0',
+                        font: {
+                            family: 'Tahoma',
+                            size: 12
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(61, 90, 128, 0.3)'
+                    },
+                    ticks: {
+                        color: '#b0b0b0',
+                        font: {
+                            family: 'Tahoma',
+                            size: 12
+                        }
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
 }
