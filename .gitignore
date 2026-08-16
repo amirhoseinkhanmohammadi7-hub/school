@@ -1,43 +1,30 @@
-```gitignore
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
-# Dependencies
+```
 node_modules/
-venv/
-.venv/
-.env
-.env.local
-.env.*
-
-# Logs and temp files
+package-lock.json
 *.log
 *.tmp
 *.swp
 *.swo
-
-# Editors
-.vscode/
-.idea/
-
-# System files
+*.out
 .DS_Store
 Thumbs.db
-
-# Coverage
+.env
+.env.local
+.env.*
+.npmignore
+.travis.yml
+.coverage
 coverage/
 htmlcov/
-.coverage
-
-# Compressed files
+.pytest_cache/
+.mypy_cache/
+__pycache__/
+*.pyc
+*.class
+*.dll
+*.so
+*.a
+*.exe
 *.zip
 *.gz
 *.tar
