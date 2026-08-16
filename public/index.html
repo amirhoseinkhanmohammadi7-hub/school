@@ -68,6 +68,9 @@
                     <span class="brand-text">سیستم مدیریت رسیدها</span>
                 </div>
                 <div class="nav-actions">
+                    <button onclick="toggleTheme()" class="btn btn-secondary btn-sm" title="تغییر تم">
+                        <i class="fa fa-moon-o" id="themeIcon"></i>
+                    </button>
                     <div class="user-info">
                         <span id="userWelcome" class="user-name"></span>
                         <span id="userRole" class="badge"></span>
@@ -138,11 +141,11 @@
                             </label>
                             <div class="file-upload-modern">
                                 <input type="file" id="receiptImage" accept="image/*" required>
-                                <div class="file-upload-area">
+                                <label for="receiptImage" class="file-upload-area">
                                     <i class="fa fa-cloud-upload upload-icon"></i>
                                     <span class="upload-text">فایل را اینجا رها کنید یا کلیک کنید</span>
                                     <span class="file-name"></span>
-                                </div>
+                                </label>
                             </div>
                             <div id="imagePreview" class="image-preview-grid"></div>
                         </div>
