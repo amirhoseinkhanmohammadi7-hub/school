@@ -2,45 +2,28 @@
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستم مدیریت رسیدهای واریزی</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="animated-bg"></div>
-    <div class="pattern-overlay"></div>
     <div class="container">
         <!-- Login Page -->
         <div id="loginPage" class="page active">
             <div class="login-box">
-                <div class="login-header">
-                    <div class="logo-circle">
-                        <i class="fa fa-university"></i>
-                    </div>
-                    <h1>سیستم مدیریت رسیدهای واریزی</h1>
-                    <p class="subtitle">به سامانه ثبت و مدیریت رسیدها خوش آمدید</p>
-                </div>
+                <h1><i class="fa fa-university"></i> سیستم مدیریت رسیدهای واریزی</h1>
                 <form id="loginForm">
                     <div class="form-group">
                         <label for="username"><i class="fa fa-user"></i> نام کاربری</label>
-                        <div class="input-wrapper">
-                            <input type="text" id="username" required placeholder="نام کاربری خود را وارد کنید">
-                            <i class="fa fa-user input-icon"></i>
-                        </div>
+                        <input type="text" id="username" required placeholder="نام کاربری خود را وارد کنید">
                     </div>
                     <div class="form-group">
                         <label for="password"><i class="fa fa-lock"></i> رمز عبور</label>
-                        <div class="input-wrapper">
-                            <input type="password" id="password" required placeholder="رمز عبور خود را وارد کنید">
-                            <i class="fa fa-lock input-icon"></i>
-                        </div>
+                        <input type="password" id="password" required placeholder="رمز عبور خود را وارد کنید">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-block">
-                        <i class="fa fa-sign-in"></i> ورود به سیستم
-                    </button>
+                    <button type="submit" class="btn btn-primary btn-block">ورود به سیستم</button>
                     <p class="error-message" id="loginError"></p>
                 </form>
             </div>
@@ -50,278 +33,159 @@
         <div id="dashboardPage" class="page">
             <nav class="navbar">
                 <div class="nav-brand">
-                    <div class="brand-logo">
-                        <i class="fa fa-university"></i>
-                    </div>
+                    <i class="fa fa-university"></i>
                     <span>سیستم مدیریت رسیدها</span>
                 </div>
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                    <i class="fa fa-bars"></i>
-                </button>
-                <div class="nav-info" id="navInfo">
-                    <div class="user-info">
-                        <div class="user-avatar">
-                            <i class="fa fa-user"></i>
-                        </div>
-                        <div class="user-details">
-                            <span id="userWelcome"></span>
-                            <span id="userRole" class="badge"></span>
-                        </div>
-                    </div>
+                <div class="nav-info">
+                    <span id="userWelcome"></span>
+                    <span id="userRole" class="badge"></span>
                     <button onclick="logout()" class="btn btn-danger btn-sm">
-                        <i class="fa fa-sign-out"></i> <span class="btn-text">خروج</span>
+                        <i class="fa fa-sign-out"></i> خروج
                     </button>
                 </div>
             </nav>
 
             <div class="dashboard-content">
-                <!-- Stats Cards -->
-                <div class="stats-overview">
-                    <div class="stat-card gradient-blue">
-                        <div class="stat-icon">
-                            <i class="fa fa-money"></i>
-                        </div>
-                        <div class="stat-details">
-                            <div class="stat-value" id="totalAmount">0</div>
-                            <div class="stat-label">کل واریزی (تومان)</div>
-                        </div>
-                        <div class="stat-trend">
-                            <i class="fa fa-arrow-up"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card gradient-green">
-                        <div class="stat-icon">
-                            <i class="fa fa-file-text"></i>
-                        </div>
-                        <div class="stat-details">
-                            <div class="stat-value" id="totalReceipts">0</div>
-                            <div class="stat-label">تعداد رسیدها</div>
-                        </div>
-                        <div class="stat-trend">
-                            <i class="fa fa-plus"></i>
-                        </div>
-                    </div>
-                    <div class="stat-card gradient-purple">
-                        <div class="stat-icon">
-                            <i class="fa fa-calendar-check-o"></i>
-                        </div>
-                        <div class="stat-details">
-                            <div class="stat-value" id="todayReceipts">0</div>
-                            <div class="stat-label">رسیدهای امروز</div>
-                        </div>
-                        <div class="stat-trend">
-                            <i class="fa fa-clock-o"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Charts Section -->
-                <div class="charts-section">
-                    <div class="chart-card">
-                        <h3><i class="fa fa-bar-chart"></i> آمار ماهانه</h3>
-                        <canvas id="monthlyChart"></canvas>
-                    </div>
-                    <div class="chart-card">
-                        <h3><i class="fa fa-pie-chart"></i> روش‌های پرداخت</h3>
-                        <canvas id="paymentMethodChart"></canvas>
-                    </div>
-                </div>
-
                 <!-- User Panel -->
                 <div id="userPanel" class="panel">
-                    <div class="panel-header">
-                        <h2><i class="fa fa-plus-circle"></i> ثبت رسید جدید</h2>
-                        <button class="btn-collapse" onclick="togglePanel('userPanel')">
-                            <i class="fa fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div class="panel-content" id="userPanelContent">
-                        <form id="receiptForm" enctype="multipart/form-data">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="studentName"><i class="fa fa-user"></i> نام دانش‌آموز</label>
-                                    <div class="input-wrapper">
-                                        <input type="text" id="studentName" required placeholder="نام دانش‌آموز را وارد کنید">
-                                        <i class="fa fa-user input-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="amount"><i class="fa fa-money"></i> مبلغ واریزی (تومان)</label>
-                                    <div class="input-wrapper">
-                                        <input type="number" id="amount" required placeholder="مبلغ به تومان" min="1">
-                                        <i class="fa fa-money input-icon"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="paymentDate"><i class="fa fa-calendar"></i> تاریخ واریز</label>
-                                    <div class="input-wrapper">
-                                        <input type="text" id="paymentDate" required placeholder="انتخاب تاریخ" class="datepicker">
-                                        <i class="fa fa-calendar input-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="paymentMethod"><i class="fa fa-credit-card"></i> روش پرداخت</label>
-                                    <div class="input-wrapper">
-                                        <select id="paymentMethod" required>
-                                            <option value="">انتخاب کنید</option>
-                                            <option value="کارت به کارت">کارت به کارت</option>
-                                            <option value="دستگاه پوز">دستگاه پوز</option>
-                                        </select>
-                                        <i class="fa fa-chevron-down input-icon"></i>
-                                    </div>
-                                </div>
+                    <h2><i class="fa fa-plus-circle"></i> ثبت رسید جدید</h2>
+                    <form id="receiptForm" enctype="multipart/form-data">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="studentName"><i class="fa fa-user"></i> نام دانش‌آموز</label>
+                                <input type="text" id="studentName" required placeholder="نام دانش‌آموز را وارد کنید">
                             </div>
                             <div class="form-group">
-                                <label for="receiptImage"><i class="fa fa-image"></i> تصویر فیش واریزی</label>
-                                <div class="file-upload-modern">
-                                    <input type="file" id="receiptImage" accept="image/*" required>
-                                    <div class="upload-area">
-                                        <i class="fa fa-cloud-upload upload-icon"></i>
-                                        <span class="upload-text">فایل را اینجا بکشید یا کلیک کنید</span>
-                                        <span class="file-name"></span>
-                                    </div>
-                                </div>
-                                <div id="imagePreview" class="image-preview"></div>
+                                <label for="amount"><i class="fa fa-money"></i> مبلغ واریزی (تومان)</label>
+                                <input type="number" id="amount" required placeholder="مبلغ به تومان" min="1">
                             </div>
-                            <button type="submit" class="btn btn-primary btn-block">
-                                <i class="fa fa-save"></i> ثبت رسید
-                            </button>
-                            <p class="success-message" id="receiptSuccess"></p>
-                            <p class="error-message" id="receiptError"></p>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="paymentDate"><i class="fa fa-calendar"></i> تاریخ واریز</label>
+                                <input type="text" id="paymentDate" required placeholder="انتخاب تاریخ" class="datepicker">
+                            </div>
+                            <div class="form-group">
+                                <label for="paymentMethod"><i class="fa fa-credit-card"></i> روش پرداخت</label>
+                                <select id="paymentMethod" required>
+                                    <option value="">انتخاب کنید</option>
+                                    <option value="کارت به کارت">کارت به کارت</option>
+                                    <option value="دستگاه پوز">دستگاه پوز</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="receiptImage"><i class="fa fa-image"></i> تصویر فیش واریزی</label>
+                            <div class="file-upload">
+                                <input type="file" id="receiptImage" accept="image/*" required>
+                                <label for="receiptImage" class="file-label">
+                                    <i class="fa fa-cloud-upload"></i> انتخاب فایل
+                                </label>
+                                <span class="file-name"></span>
+                            </div>
+                            <div id="imagePreview" class="image-preview"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fa fa-save"></i> ثبت رسید
+                        </button>
+                        <p class="success-message" id="receiptSuccess"></p>
+                        <p class="error-message" id="receiptError"></p>
+                    </form>
                 </div>
 
                 <!-- Admin Panel -->
                 <div id="adminPanel" class="panel" style="display: none;">
-                    <div class="panel-header">
-                        <h2><i class="fa fa-users"></i> مدیریت کاربران</h2>
-                        <button class="btn-collapse" onclick="togglePanel('adminPanel')">
-                            <i class="fa fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div class="panel-content" id="adminPanelContent">
-                        <form id="registerForm">
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="newUsername"><i class="fa fa-user-plus"></i> نام کاربری جدید</label>
-                                    <div class="input-wrapper">
-                                        <input type="text" id="newUsername" required placeholder="نام کاربری">
-                                        <i class="fa fa-user input-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="newPassword"><i class="fa fa-key"></i> رمز عبور</label>
-                                    <div class="input-wrapper">
-                                        <input type="password" id="newPassword" required placeholder="رمز عبور">
-                                        <i class="fa fa-lock input-icon"></i>
-                                    </div>
-                                </div>
-                                <div class="form-group form-group-btn">
-                                    <button type="submit" class="btn btn-success">
-                                        <i class="fa fa-plus"></i> <span class="btn-text">افزودن کاربر</span>
-                                    </button>
-                                </div>
+                    <h2><i class="fa fa-users"></i> مدیریت کاربران</h2>
+                    <form id="registerForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newUsername"><i class="fa fa-user-plus"></i> نام کاربری جدید</label>
+                                <input type="text" id="newUsername" required placeholder="نام کاربری">
                             </div>
-                            <p class="success-message" id="registerSuccess"></p>
-                            <p class="error-message" id="registerError"></p>
-                        </form>
-                    </div>
-                </div>
+                            <div class="form-group">
+                                <label for="newPassword"><i class="fa fa-key"></i> رمز عبور</label>
+                                <input type="password" id="newPassword" required placeholder="رمز عبور">
+                            </div>
+                            <div class="form-group form-group-btn">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa fa-plus"></i> افزودن کاربر
+                                </button>
+                            </div>
+                        </div>
+                        <p class="success-message" id="registerSuccess"></p>
+                        <p class="error-message" id="registerError"></p>
+                    </form>
 
-                <!-- Search Section -->
-                <div class="panel search-panel">
-                    <div class="panel-header">
-                        <h2><i class="fa fa-search"></i> جستجو و فیلتر</h2>
-                        <button class="btn-collapse" onclick="togglePanel('searchPanel')">
-                            <i class="fa fa-chevron-down"></i>
-                        </button>
+                    <div class="stats-section">
+                        <h3><i class="fa fa-bar-chart"></i> آمار کلی واریزی‌ها</h3>
+                        <div class="stats-cards">
+                            <div class="stat-card">
+                                <i class="fa fa-money"></i>
+                                <div class="stat-value" id="totalAmount">0</div>
+                                <div class="stat-label">کل واریزی (تومان)</div>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fa fa-file-text"></i>
+                                <div class="stat-value" id="totalReceipts">0</div>
+                                <div class="stat-label">تعداد رسیدها</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="panel-content" id="searchPanelContent">
+
+                    <div class="search-section">
+                        <h3><i class="fa fa-search"></i> جستجو و فیلتر</h3>
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="searchStudent"><i class="fa fa-user"></i> نام دانش‌آموز</label>
-                                <div class="input-wrapper">
-                                    <input type="text" id="searchStudent" placeholder="جستجو بر اساس نام">
-                                    <i class="fa fa-user input-icon"></i>
-                                </div>
+                                <input type="text" id="searchStudent" placeholder="جستجو بر اساس نام">
                             </div>
                             <div class="form-group">
                                 <label for="searchStartDate"><i class="fa fa-calendar"></i> از تاریخ</label>
-                                <div class="input-wrapper">
-                                    <input type="text" id="searchStartDate" class="datepicker" placeholder="تاریخ شروع">
-                                    <i class="fa fa-calendar input-icon"></i>
-                                </div>
+                                <input type="text" id="searchStartDate" class="datepicker" placeholder="تاریخ شروع">
                             </div>
                             <div class="form-group">
                                 <label for="searchEndDate"><i class="fa fa-calendar"></i> تا تاریخ</label>
-                                <div class="input-wrapper">
-                                    <input type="text" id="searchEndDate" class="datepicker" placeholder="تاریخ پایان">
-                                    <i class="fa fa-calendar input-icon"></i>
-                                </div>
+                                <input type="text" id="searchEndDate" class="datepicker" placeholder="تاریخ پایان">
                             </div>
                             <div class="form-group form-group-btn">
                                 <button onclick="searchReceipts()" class="btn btn-primary">
-                                    <i class="fa fa-search"></i> <span class="btn-text">جستجو</span>
+                                    <i class="fa fa-search"></i> جستجو
                                 </button>
                                 <button onclick="resetSearch()" class="btn btn-secondary">
-                                    <i class="fa fa-refresh"></i> <span class="btn-text">نمایش همه</span>
+                                    <i class="fa fa-refresh"></i> نمایش همه
                                 </button>
                             </div>
                         </div>
                         <div class="search-stats">
-                            <div class="stat-item">
-                                <i class="fa fa-money"></i>
-                                <span id="searchTotal">جمع کل: 0 تومان</span>
-                            </div>
-                            <div class="stat-item">
-                                <i class="fa fa-file-text"></i>
-                                <span id="searchCount">تعداد: 0</span>
-                            </div>
+                            <span id="searchTotal">جمع کل: 0 تومان</span>
+                            <span id="searchCount">تعداد: 0</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Receipts List -->
                 <div class="panel receipts-panel">
-                    <div class="panel-header">
-                        <h2><i class="fa fa-list"></i> لیست رسیدهای من</h2>
-                        <div class="panel-actions">
-                            <button class="btn-toggle-view" onclick="toggleViewMode()">
-                                <i class="fa fa-th" id="viewIcon"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="panel-content">
-                        <div class="table-responsive">
-                            <table class="receipts-table" id="receiptsTable">
-                                <thead>
-                                    <tr>
-                                        <th>ردیف</th>
-                                        <th>نام دانش‌آموز</th>
-                                        <th>مبلغ (تومان)</th>
-                                        <th>تاریخ واریز</th>
-                                        <th>روش پرداخت</th>
-                                        <th>تصویر فیش</th>
-                                        <th>تاریخ ثبت</th>
-                                        <th>عملیات</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="receiptsTableBody">
-                                    <tr>
-                                        <td colspan="8" class="loading">
-                                            <div class="spinner"></div>
-                                            <span>در حال بارگذاری...</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Card View for Mobile -->
-                        <div class="cards-view" id="cardsView" style="display: none;">
-                        </div>
+                    <h2><i class="fa fa-list"></i> لیست رسیدهای من</h2>
+                    <div class="table-responsive">
+                        <table class="receipts-table">
+                            <thead>
+                                <tr>
+                                    <th>ردیف</th>
+                                    <th>نام دانش‌آموز</th>
+                                    <th>مبلغ (تومان)</th>
+                                    <th>تاریخ واریز</th>
+                                    <th>روش پرداخت</th>
+                                    <th>تصویر فیش</th>
+                                    <th>تاریخ ثبت</th>
+                                    <th>عملیات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="receiptsTableBody">
+                                <tr>
+                                    <td colspan="8" class="loading">در حال بارگذاری...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
