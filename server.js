@@ -260,20 +260,36 @@ app.get('/api/statistics', authenticateToken, isAdmin, (req, res) => {
 });
 
 // Get monthly chart data (admin only)
-app.get('/api/chart-data', authenticateToken, isAdmin, (req, res) => {
-    // Get last 6 months data
-    const query = `
-        SELECT 
-            strftime('%Y-%m', payment_date) as month,
-            COUNT(*) as count,
-            SUM(amount) as total
-        FROM receipts 
-        WHERE payment_date >= date('now', '-6 months')
-        GROUP BY month
-        ORDER BY month ASC
-    `;
+app.get('/api/chart-data', authenticateToken, (req, res) => {
+    // Get last 6 months data - for all users if admin, or just user's receipts if regular user
+    let query;
+    if (req.user.role === 'admin') {
+        query = `
+            SELECT 
+                strftime('%Y-%m', payment_date) as month,
+                COUNT(*) as count,
+                SUM(amount) as total
+            FROM receipts 
+            WHERE payment_date >= date('now', '-6 months')
+            GROUP BY month
+            ORDER BY month ASC
+        `;
+    } else {
+        query = `
+            SELECT 
+                strftime('%Y-%m', payment_date) as month,
+                COUNT(*) as count,
+                SUM(amount) as total
+            FROM receipts 
+            WHERE user_id = ? AND payment_date >= date('now', '-6 months')
+            GROUP BY month
+            ORDER BY month ASC
+        `;
+    }
     
-    const rows = db.prepare(query).all();
+    const rows = req.user.role === 'admin' 
+        ? db.prepare(query).all()
+        : db.prepare(query).all(req.user.id);
     
     // Convert to Persian month names
     const persianMonths = {
@@ -353,6 +369,36 @@ app.delete('/api/receipts/:id', authenticateToken, (req, res) => {
     
     db.prepare('DELETE FROM receipts WHERE id = ?').run(receiptId);
     res.json({ message: 'Receipt deleted successfully' });
+});
+
+// Delete user (admin only)
+app.delete('/api/users/:id', authenticateToken, isAdmin, (req, res) => {
+    const userId = req.params.id;
+    
+    // Prevent deleting yourself
+    if (parseInt(userId) === req.user.id) {
+        return res.status(400).json({ error: 'Cannot delete your own account' });
+    }
+    
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+    if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Delete user's receipts first
+    const receipts = db.prepare('SELECT * FROM receipts WHERE user_id = ?').all(userId);
+    receipts.forEach(receipt => {
+        const filePath = path.join(__dirname, 'uploads', receipt.receipt_image);
+        try {
+            fs.unlinkSync(filePath);
+        } catch (err) {
+            // Ignore file not found errors
+        }
+    });
+    
+    db.prepare('DELETE FROM receipts WHERE user_id = ?').run(userId);
+    db.prepare('DELETE FROM users WHERE id = ?').run(userId);
+    res.json({ message: 'User deleted successfully' });
 });
 
 app.listen(PORT, () => {
