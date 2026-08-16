@@ -141,11 +141,11 @@
                             </label>
                             <div class="file-upload-modern">
                                 <input type="file" id="receiptImage" accept="image/*" required>
-                                <label for="receiptImage" class="file-upload-area">
+                                <div class="file-upload-area" onclick="document.getElementById('receiptImage').click()">
                                     <i class="fa fa-cloud-upload upload-icon"></i>
                                     <span class="upload-text">فایل را اینجا رها کنید یا کلیک کنید</span>
                                     <span class="file-name"></span>
-                                </label>
+                                </div>
                             </div>
                             <div id="imagePreview" class="image-preview-grid"></div>
                         </div>
@@ -220,6 +220,30 @@
                                     <div class="stat-value" id="totalReceipts">0</div>
                                     <div class="stat-label">تعداد رسیدها</div>
                                 </div>
+                            </div>
+                        </div>
+                        <!-- Charts Section -->
+                        <div class="charts-container">
+                            <div class="chart-wrapper">
+                                <h4>
+                                    <i class="fa fa-pie-chart"></i>
+                                    <span>توزیع روش‌های پرداخت</span>
+                                </h4>
+                                <canvas id="paymentMethodChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h4>
+                                    <i class="fa fa-line-chart"></i>
+                                    <span>روند واریزی‌ها (۷ روز اخیر)</span>
+                                </h4>
+                                <canvas id="trendChart"></canvas>
+                            </div>
+                            <div class="chart-wrapper">
+                                <h4>
+                                    <i class="fa fa-bar-chart"></i>
+                                    <span>مقایسه دانش‌آموزان</span>
+                                </h4>
+                                <canvas id="studentChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -346,6 +370,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

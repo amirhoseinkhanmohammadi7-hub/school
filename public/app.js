@@ -26,11 +26,44 @@ $(document).ready(function() {
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                $('#imagePreview').html(`<img src="${e.target.result}" alt="پیش‌نمایش">`);
+                $('#imagePreview').html(`<img src="${e.target.result}" alt="پیش‌نمایش" onclick="viewImage('${e.target.result}')">`);
             };
             reader.readAsDataURL(file);
+        } else {
+            $('.file-name').text('');
+            $('#imagePreview').html('');
         }
     });
+    
+    // Drag and drop support
+    const uploadArea = document.querySelector('.file-upload-area');
+    const fileInput = document.getElementById('receiptImage');
+    
+    if (uploadArea && fileInput) {
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = 'var(--primary-color)';
+            uploadArea.style.background = 'rgba(102, 126, 234, 0.1)';
+        });
+        
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '';
+            uploadArea.style.background = '';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '';
+            uploadArea.style.background = '';
+            const files = e.dataTransfer.files;
+            if (files.length > 0 && files[0].type.startsWith('image/')) {
+                fileInput.files = files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+    }
 
     // Check if user is already logged in
     const savedToken = localStorage.getItem('authToken');
@@ -479,6 +512,11 @@ function updateSearchStats(total, count) {
     $('#searchCount').text(`تعداد: ${count}`);
 }
 
+// Global chart instances
+let paymentMethodChartInstance = null;
+let trendChartInstance = null;
+let studentChartInstance = null;
+
 // Load statistics (admin only)
 async function loadStatistics() {
     try {
@@ -492,7 +530,296 @@ async function loadStatistics() {
         
         $('#totalAmount').text(stats.total.toLocaleString());
         $('#totalReceipts').text(stats.count);
+        
+        // Load charts data
+        await loadChartsData();
     } catch (error) {
         console.error('Load statistics error:', error);
     }
+}
+
+// Load charts data
+async function loadChartsData() {
+    try {
+        // Get all receipts for charts
+        const response = await fetch(`${API_URL}/api/admin/receipts`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        const data = await response.json();
+        const receipts = data.receipts || [];
+        
+        if (receipts.length === 0) {
+            renderEmptyCharts();
+            return;
+        }
+        
+        // Payment Method Chart (Pie)
+        const paymentMethods = {};
+        receipts.forEach(r => {
+            paymentMethods[r.payment_method] = (paymentMethods[r.payment_method] || 0) + 1;
+        });
+        
+        renderPaymentMethodChart(paymentMethods);
+        
+        // Trend Chart (Line) - Last 7 days
+        const last7Days = {};
+        const today = new Date();
+        for (let i = 6; i >= 0; i--) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            const dateStr = d.toISOString().split('T')[0];
+            last7Days[dateStr] = 0;
+        }
+        
+        receipts.forEach(r => {
+            const receiptDate = new Date(r.created_at).toISOString().split('T')[0];
+            if (last7Days.hasOwnProperty(receiptDate)) {
+                last7Days[receiptDate] += r.amount;
+            }
+        });
+        
+        renderTrendChart(last7Days);
+        
+        // Student Chart (Bar) - Top 5 students
+        const studentAmounts = {};
+        receipts.forEach(r => {
+            studentAmounts[r.student_name] = (studentAmounts[r.student_name] || 0) + r.amount;
+        });
+        
+        const sortedStudents = Object.entries(studentAmounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5);
+        
+        renderStudentChart(sortedStudents);
+        
+    } catch (error) {
+        console.error('Load charts error:', error);
+    }
+}
+
+// Render empty charts
+function renderEmptyCharts() {
+    const ctxPayment = document.getElementById('paymentMethodChart');
+    const ctxTrend = document.getElementById('trendChart');
+    const ctxStudent = document.getElementById('studentChart');
+    
+    if (ctxPayment) {
+        const ctx = ctxPayment.getContext('2d');
+        if (paymentMethodChartInstance) paymentMethodChartInstance.destroy();
+        paymentMethodChartInstance = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['بدون داده'],
+                datasets: [{
+                    data: [1],
+                    backgroundColor: ['#e2e8f0']
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+    
+    if (ctxTrend) {
+        const ctx = ctxTrend.getContext('2d');
+        if (trendChartInstance) trendChartInstance.destroy();
+        trendChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['بدون داده'],
+                datasets: [{
+                    label: 'مبلغ واریزی',
+                    data: [0],
+                    borderColor: '#667eea',
+                    tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+    
+    if (ctxStudent) {
+        const ctx = ctxStudent.getContext('2d');
+        if (studentChartInstance) studentChartInstance.destroy();
+        studentChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['بدون داده'],
+                datasets: [{
+                    label: 'مجموع واریزی',
+                    data: [0],
+                    backgroundColor: '#667eea'
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+}
+
+// Render Payment Method Chart
+function renderPaymentMethodChart(paymentMethods) {
+    const ctx = document.getElementById('paymentMethodChart').getContext('2d');
+    
+    if (paymentMethodChartInstance) {
+        paymentMethodChartInstance.destroy();
+    }
+    
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const textColor = isDark ? '#f7fafc' : '#2d3748';
+    
+    paymentMethodChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(paymentMethods),
+            datasets: [{
+                data: Object.values(paymentMethods),
+                backgroundColor: [
+                    '#667eea',
+                    '#764ba2',
+                    '#f093fb',
+                    '#48bb78',
+                    '#ed8936'
+                ],
+                borderWidth: 2,
+                borderColor: isDark ? '#2d3748' : '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: textColor, font: { family: 'Vazirmatn' } }
+                }
+            }
+        }
+    });
+}
+
+// Render Trend Chart
+function renderTrendChart(last7Days) {
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    
+    if (trendChartInstance) {
+        trendChartInstance.destroy();
+    }
+    
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const textColor = isDark ? '#f7fafc' : '#2d3748';
+    const gridColor = isDark ? '#4a5568' : '#e2e8f0';
+    
+    // Convert to Persian dates
+    const labels = Object.keys(last7Days).map(date => {
+        const d = new Date(date);
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toLocaleDateString('fa-IR', { month: 'short', day: 'numeric' });
+    });
+    
+    trendChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'مبلغ واریزی (تومان)',
+                data: Object.values(last7Days),
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    titleFont: { family: 'Vazirmatn' },
+                    bodyFont: { family: 'Vazirmatn' },
+                    rtl: true
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { 
+                        color: textColor,
+                        callback: value => value.toLocaleString('fa-IR')
+                    },
+                    grid: { color: gridColor }
+                },
+                x: {
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                }
+            }
+        }
+    });
+}
+
+// Render Student Chart
+function renderStudentChart(sortedStudents) {
+    const ctx = document.getElementById('studentChart').getContext('2d');
+    
+    if (studentChartInstance) {
+        studentChartInstance.destroy();
+    }
+    
+    const isDark = document.body.getAttribute('data-theme') === 'dark';
+    const textColor = isDark ? '#f7fafc' : '#2d3748';
+    const gridColor = isDark ? '#4a5568' : '#e2e8f0';
+    
+    studentChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: sortedStudents.map(s => s[0]),
+            datasets: [{
+                label: 'مجموع واریزی (تومان)',
+                data: sortedStudents.map(s => s[1]),
+                backgroundColor: [
+                    '#667eea',
+                    '#764ba2',
+                    '#f093fb',
+                    '#48bb78',
+                    '#ed8936'
+                ],
+                borderRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    titleFont: { family: 'Vazirmatn' },
+                    bodyFont: { family: 'Vazirmatn' },
+                    rtl: true,
+                    callbacks: {
+                        label: context => context.parsed.y.toLocaleString('fa-IR') + ' تومان'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { 
+                        color: textColor,
+                        callback: value => value.toLocaleString('fa-IR')
+                    },
+                    grid: { color: gridColor }
+                },
+                x: {
+                    ticks: { color: textColor },
+                    grid: { display: false }
+                }
+            }
+        }
+    });
 }
