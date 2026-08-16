@@ -395,7 +395,171 @@ async function loadStatistics() {
         
         $('#totalAmount').text(stats.total.toLocaleString());
         $('#totalReceipts').text(stats.count);
+        
+        // Load chart data
+        loadChartData();
     } catch (error) {
         console.error('Load statistics error:', error);
     }
+}
+
+// Global chart instance
+let depositsChartInstance = null;
+
+// Load chart data
+async function loadChartData() {
+    try {
+        const response = await fetch(`${API_URL}/api/chart-data`, {
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        const chartData = await response.json();
+        renderChart(chartData);
+    } catch (error) {
+        console.error('Load chart data error:', error);
+    }
+}
+
+// Render chart
+function renderChart(data) {
+    const ctx = document.getElementById('depositsChart').getContext('2d');
+    
+    // Destroy existing chart if it exists
+    if (depositChartInstance) {
+        depositChartInstance.destroy();
+    }
+    
+    // Create new chart
+    depositChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data.labels,
+            datasets: [
+                {
+                    label: 'مبلغ واریزی (تومان)',
+                    data: data.amounts,
+                    backgroundColor: 'rgba(23, 162, 184, 0.7)',
+                    borderColor: 'rgba(23, 162, 184, 1)',
+                    borderWidth: 2,
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'تعداد واریزی',
+                    data: data.counts,
+                    backgroundColor: 'rgba(40, 167, 69, 0.7)',
+                    borderColor: 'rgba(40, 167, 69, 1)',
+                    borderWidth: 2,
+                    yAxisID: 'y1'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        color: '#e8e8e8',
+                        font: {
+                            family: 'Tahoma',
+                            size: 14
+                        }
+                    }
+                },
+                tooltip: {
+                    rtl: true,
+                    titleAlign: 'right',
+                    bodyAlign: 'right',
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed.y !== null) {
+                                if (context.datasetIndex === 0) {
+                                    label += context.parsed.y.toLocaleString() + ' تومان';
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                            }
+                            return label;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#b0b0b0',
+                        font: {
+                            family: 'Tahoma',
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(61, 90, 128, 0.3)'
+                    }
+                },
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    ticks: {
+                        color: '#17a2b8',
+                        font: {
+                            family: 'Tahoma',
+                            size: 12
+                        },
+                        callback: function(value) {
+                            return value.toLocaleString();
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(61, 90, 128, 0.3)'
+                    },
+                    title: {
+                        display: true,
+                        text: 'مبلغ (تومان)',
+                        color: '#17a2b8',
+                        font: {
+                            family: 'Tahoma',
+                            size: 14
+                        }
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    ticks: {
+                        color: '#28a745',
+                        font: {
+                            family: 'Tahoma',
+                            size: 12
+                        },
+                        callback: function(value) {
+                            return Math.round(value);
+                        }
+                    },
+                    grid: {
+                        drawOnChartArea: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'تعداد',
+                        color: '#28a745',
+                        font: {
+                            family: 'Tahoma',
+                            size: 14
+                        }
+                    }
+                }
+            }
+        }
+    });
 }
